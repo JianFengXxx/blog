@@ -1,7 +1,7 @@
 package com.fengjian.blog.router
 
 import cats.effect.IO
-import com.fengjian.blog.router.model.user.{UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
 import com.fengjian.blog.service.UserService
 import io.circe.{Decoder, Encoder}
 import io.circe.syntax._
@@ -52,6 +52,16 @@ class UserRouter(userService: UserService) extends Http4sDsl[IO] {
           resp <- result match {
             case Left(_) => BadRequest("user not exist.")
             case Right(nickname) => Ok(nickname.asJson.noSpaces)
+          }
+        } yield resp
+
+      case req@POST -> Root / "user" / "forgot" =>
+        for {
+          retrievePasswordDTO <- req.as[RetrievePasswordDTO]
+          result <- userService.retrievePassword(retrievePasswordDTO)
+          resp <- result match {
+            case Left(_) => BadRequest("user not exist.")
+            case Right(password) => Ok(s"password: $password")
           }
         } yield resp
     }
