@@ -32,22 +32,17 @@ class UserServiceImpl(repository: UserRepository) extends UserService {
       result <- userBasicInfo match {
         case Right(userBasicPO) =>
           for {
-            checkResult <- checkQuestions(userBasicPO.id, retrievePasswordDTO.questions)
-            password = if (checkResult) {
-              Right(userBasicPO.password)
-            } else {
-              Left(UserNotFoundError)
-            }
+            password <- checkQuestions(userBasicPO, retrievePasswordDTO.questions)
           } yield password
         case Left(_) => IO(Left(UserNotFoundError))
       }
     } yield result
   }
 
-  private def checkQuestions(userId: Int, questions: List[QuestionDTO]): IO[Boolean] = {
+  private def checkQuestions(userBasicPO: UserBasicInfoPO, questions: List[QuestionDTO]): IO[Either[UserNotFoundError.type, String]] = {
     for {
-      questionsFromDB <- repository.getUserQuestions(userId)
-      password = if (questions == questionsFromDB)  true else false
+      questionsFromDB <- repository.getUserQuestions(userBasicPO.id)
+      password = if (questions == questionsFromDB) Right(userBasicPO.password) else Left(UserNotFoundError)
     } yield password
   }
 
