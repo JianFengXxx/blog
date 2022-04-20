@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+
+  mysqlserver:
+    image: mysql:8.0.28
+    ports:
+      - 8003:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=fengjian
+      - MYSQL_DATABASE=blog
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_config:/etc/mysql/conf.d
+
+  blog-fj:
+    image: blog-fj:v2.0
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysqlserver
+    environment:
+      - MYSQL_URL=jdbc:mysql://mysqlserver/blog
+      - MYSQL_ROOT_PASSWORD=fengjian
+    volumes:
+      - "./:/app"
+      - "ivy-cache:/root/.ivy2/cache"
+      - "docker-scala-sbt-cache:/root/.sbt"
+      - "coursier-cache:/root/.cache/coursier"
+    command: sbt run
+
+volumes:
+  ivy-cache:
+  docker-scala-sbt-cache:
+  coursier-cache:
+  mysql_data:
+  mysql_config:
