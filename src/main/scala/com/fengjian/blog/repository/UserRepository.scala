@@ -15,7 +15,7 @@ trait UserRepository {
 
   def updateUserInfo(userId: Int, nickname: String): IO[Either[UserNotFoundError.type , String]]
 
-  def checkUserInfo(retrievePasswordInfo: RetrievePasswordDTO): IO[Either[UserNotFoundError.type, UserBasicInfoPO]]
+  def getUserBasicInfo(username: String): IO[Either[UserNotFoundError.type, UserBasicInfoPO]]
 
   def getUserQuestions(userId: Int): IO[List[QuestionDTO]]
 

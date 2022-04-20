@@ -26,7 +26,7 @@ class MockUserRepositoryNormal extends UserRepository{
     IO.pure(Right("xxx"))
   }
 
-  override def checkUserInfo(forgotPasswordDTO: RetrievePasswordDTO): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = ???
+  override def getUserBasicInfo(username: String): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = ???
 
   override def getUserQuestions(userId: Int): IO[List[QuestionDTO]] = ???
 }

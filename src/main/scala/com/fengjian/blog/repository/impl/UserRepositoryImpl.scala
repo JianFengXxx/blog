@@ -64,15 +64,10 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
     )
   }
 
-  override def checkUserInfo(retrievePasswordInfo: RetrievePasswordDTO): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = {
+  override def getUserBasicInfo(username: String): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = {
     transactor.use(
       xa => {
-        sql"""select id, username, password, nickname, name, birthday, gender from user_info
-                  where username=${retrievePasswordInfo.username}
-                  and name=${retrievePasswordInfo.name}
-                  and birthday=${retrievePasswordInfo.birthday}
-                  and gender=${retrievePasswordInfo.gender}
-               """
+        sql"select id, username, password, nickname, name, birthday, gender from user_info where username=$username"
           .query[UserBasicInfoPO]
           .option
           .transact(xa)

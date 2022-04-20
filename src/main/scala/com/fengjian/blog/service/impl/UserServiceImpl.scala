@@ -28,12 +28,9 @@ class UserServiceImpl(repository: UserRepository) extends UserService {
 
   override def retrievePassword(retrievePasswordDTO: RetrievePasswordDTO): IO[Either[UserNotFoundError.type, String]] = {
     for {
-      userBasicInfo <- repository.checkUserInfo(retrievePasswordDTO)
+      userBasicInfo <- repository.getUserBasicInfo(retrievePasswordDTO.username)
       result <- userBasicInfo match {
-        case Right(userBasicPO) =>
-          for {
-            password <- checkQuestions(userBasicPO, retrievePasswordDTO.questions)
-          } yield password
+        case Right(userBasicPO) => checkQuestions(userBasicPO, retrievePasswordDTO.questions)
         case Left(_) => IO(Left(UserNotFoundError))
       }
     } yield result
