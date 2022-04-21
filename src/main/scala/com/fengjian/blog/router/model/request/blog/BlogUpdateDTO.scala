@@ -1,4 +1,4 @@
-package com.fengjian.blog.router.model.blog
+package com.fengjian.blog.router.model.request.blog
 
 import com.fengjian.blog.repository.model.BlogPO
 

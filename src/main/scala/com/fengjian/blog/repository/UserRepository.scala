@@ -3,7 +3,7 @@ package com.fengjian.blog.repository
 import cats.effect.IO
 import com.fengjian.blog.exception.{UserHasExistError, UserNotFoundError}
 import com.fengjian.blog.repository.model.{QuestionPO, UserPO}
-import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, QuestionDTO}
+import com.fengjian.blog.router.model.request.user.QuestionDTO
 
 trait UserRepository {
 

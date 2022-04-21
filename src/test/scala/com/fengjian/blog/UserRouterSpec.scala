@@ -5,7 +5,7 @@ import com.fengjian.blog.router.UserRouter
 import com.fengjian.blog.mock.abnormal.MockUserRepositoryAbnormal
 import com.fengjian.blog.mock.normal.MockUserRepositoryNormal
 import com.fengjian.blog.repository.UserRepository
-import com.fengjian.blog.router.model.user.{UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.router.model.request.user.{UserCreateDTO, UserLoginDTO, UserUpdateDTO}
 import com.fengjian.blog.service.impl.UserServiceImpl
 import org.http4s.{Method, Request, Response, Status}
 import org.http4s.implicits._
@@ -54,7 +54,7 @@ class UserRouterSpec extends Specification {
       val userInfoResponse = userHttpClient(userInfoRequest, mockUserRepositoryNormal)
       val result: IO[String] = userInfoResponse.as[String]
       val resultStr = result.unsafeRunSync()
-      resultStr must beEqualTo("{\"id\":1,\"username\":\"test\",\"password\":\"test\",\"nickname\":\"test\"}")
+      resultStr must beEqualTo("{\"id\":1,\"username\":\"test\",\"nickname\":\"test\",\"name\":\"test\",\"birthday\":\"2022-03-11\",\"gender\":1,\"lastLogin\":\"2022-04-21 11:23:34\"}")
     }
 
     "user info update success" in {

@@ -4,7 +4,7 @@ import cats.effect.{IO, Resource}
 import com.fengjian.blog.exception._
 import com.fengjian.blog.repository.{DatabaseTransactor, UserRepository}
 import com.fengjian.blog.repository.model.{QuestionPO, UserPO}
-import com.fengjian.blog.router.model.user.{QuestionDTO, RetrievePasswordDTO}
+import com.fengjian.blog.router.model.request.user.QuestionDTO
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
 import doobie.implicits.javatime._

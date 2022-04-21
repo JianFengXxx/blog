@@ -1,7 +1,7 @@
 package com.fengjian.blog.router
 
 import cats.effect.IO
-import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.router.model.request.user.{RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
 import com.fengjian.blog.service.UserService
 import io.circe.{Decoder, Encoder}
 import io.circe.syntax._

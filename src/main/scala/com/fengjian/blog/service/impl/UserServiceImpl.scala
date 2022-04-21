@@ -3,10 +3,12 @@ package com.fengjian.blog.service.impl
 import cats.effect.IO
 import com.fengjian.blog.exception.{UserHasExistError, UserNotFoundError}
 import com.fengjian.blog.repository.UserRepository
-import com.fengjian.blog.repository.model.{UserPO}
-import com.fengjian.blog.router.model.user.{QuestionDTO, RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.repository.model.UserPO
+import com.fengjian.blog.router.model.request.user.{QuestionDTO, RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.router.model.response.user.UserInfoResponse
 import com.fengjian.blog.service.UserService
-import com.fengjian.blog.service.model.UserInfoResponse
+
+import java.time.{LocalDate, LocalDateTime}
 
 
 class UserServiceImpl(repository: UserRepository) extends UserService {
@@ -15,8 +17,9 @@ class UserServiceImpl(repository: UserRepository) extends UserService {
     repository.updateUserInfo(userUpdateDTO.id, userUpdateDTO.nickname)
   }
 
-  override def register(userCreateInfo: UserCreateDTO): IO[Either[UserHasExistError.type, Unit]] = {
-    val userPO: UserPO = userCreateInfo.convert2PO()
+  override def register(userCreate: UserCreateDTO): IO[Either[UserHasExistError.type, Unit]] = {
+    val userPO: UserPO = UserPO(None, userCreate.username, userCreate.password, userCreate.nickname, userCreate.name,
+      LocalDate.parse(userCreate.birthday), userCreate.gender, LocalDateTime.now())
     repository.register(userPO)
   }
 

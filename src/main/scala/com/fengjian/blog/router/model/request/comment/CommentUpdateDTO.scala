@@ -1,4 +1,4 @@
-package com.fengjian.blog.router.model.comment
+package com.fengjian.blog.router.model.request.comment
 
 import com.fengjian.blog.repository.model.CommentPO
 

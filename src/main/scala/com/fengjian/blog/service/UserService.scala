@@ -2,8 +2,8 @@ package com.fengjian.blog.service
 
 import cats.effect.IO
 import com.fengjian.blog.exception.{UserHasExistError, UserNotFoundError}
-import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
-import com.fengjian.blog.service.model.UserInfoResponse
+import com.fengjian.blog.router.model.request.user.{RetrievePasswordDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.router.model.response.user.UserInfoResponse
 
 trait UserService {
 

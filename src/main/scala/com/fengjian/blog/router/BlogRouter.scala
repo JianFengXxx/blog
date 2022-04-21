@@ -1,7 +1,7 @@
 package com.fengjian.blog.router
 
 import cats.effect.IO
-import com.fengjian.blog.router.model.blog.{BlogCreateDTO, BlogUpdateDTO}
+import com.fengjian.blog.router.model.request.blog.{BlogCreateDTO, BlogUpdateDTO}
 import com.fengjian.blog.service.impl.BlogServiceImpl
 import io.circe.Decoder
 import io.circe.syntax._
