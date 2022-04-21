@@ -39,7 +39,7 @@ class UserRouterSpec extends Specification {
     }
 
     "user register success" in {
-      val userCreateBody = UserCreateDTO("test", "test", "test")
+      val userCreateBody = UserCreateDTO("test", "test", "test", "test", "2000-01-01", 1)
       val registerRequest = Request[IO](Method.POST, uri"/register").withEntity(userCreateBody)
 
       val mockUserRepositoryNormal = new MockUserRepositoryNormal()

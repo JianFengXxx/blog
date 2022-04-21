@@ -3,10 +3,13 @@ package com.fengjian.blog.repository.impl
 import cats.effect.{IO, Resource}
 import com.fengjian.blog.exception._
 import com.fengjian.blog.repository.{DatabaseTransactor, UserRepository}
-import com.fengjian.blog.repository.model.{QuestionPO, UserBasicInfoPO, UserPO}
-import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, QuestionDTO}
+import com.fengjian.blog.repository.model.{QuestionPO, UserPO}
+import com.fengjian.blog.router.model.user.{QuestionDTO, RetrievePasswordDTO}
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
+import doobie.implicits.javatime._
+
+import java.time.LocalDateTime
 
 
 
@@ -14,7 +17,7 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
 
   def getUser(id: Int): IO[Either[UserNotFoundError.type , UserPO]] = {
     transactor.use(
-      xa => sql"SELECT id, username, password, nickname FROM user_info where id = $id"
+      xa => sql"SELECT id, username, password, nickname, name, birthday, gender, last_login FROM user_info where id = $id"
         .query[UserPO]
         .option
         .transact(xa)
@@ -27,7 +30,7 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
 
   def login(username: String, password: String): IO[Either[UserNotFoundError.type , UserPO]] = {
     transactor.use(
-      xa => sql"SELECT id, username, password, nickname FROM user_info where username = $username and password = $password"
+      xa => sql"SELECT id, username, password, nickname, name, birthday, gender, last_login FROM user_info where username = $username and password = $password"
         .query[UserPO]
         .option
         .transact(xa)
@@ -40,7 +43,9 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
 
   def register(user: UserPO): IO[Either[UserHasExistError.type , Unit]] = {
     transactor.use(
-      xa => sql"insert into user_info (username, password, nickname) values (${user.username}, ${user.password}, ${user.nickname})"
+      xa => sql"""insert into user_info (username, password, nickname, name, birthday, gender, last_login)
+                  values (${user.username}, ${user.password}, ${user.nickname}, ${user.name}, ${user.birthday}, ${user.gender}, ${user.lastLogin.toString})
+               """
         .update
         .run
         .transact(xa)
@@ -64,15 +69,15 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
     )
   }
 
-  override def getUserBasicInfo(username: String): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = {
+  override def getUserInfo(username: String): IO[Either[UserNotFoundError.type, UserPO]] = {
     transactor.use(
       xa => {
-        sql"select id, username, password, nickname, name, birthday, gender from user_info where username=$username"
-          .query[UserBasicInfoPO]
+        sql"select id, username, password, nickname, name, birthday, gender, last_login from user_info where username=$username"
+          .query[UserPO]
           .option
           .transact(xa)
           .map {
-            case Some(userBasicInfoPO) => Right(userBasicInfoPO)
+            case Some(userPo) => Right(userPo)
             case _ => Left(UserNotFoundError)
           }
       }
@@ -88,4 +93,12 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
     )
   }
 
+  override def refreshLastLogin(userId: Int): IO[Int] = {
+    transactor.use(
+      xa => sql"update user_info set last_login = ${LocalDateTime.now.toString} where id = $userId"
+        .update
+        .run
+        .transact(xa)
+    )
+  }
 }
