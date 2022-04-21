@@ -1,7 +1,7 @@
 package com.fengjian.blog.router
 
 import cats.effect.IO
-import com.fengjian.blog.router.model.comment.{CommentCreateDTO, CommentUpdateDTO}
+import com.fengjian.blog.router.model.request.comment.{CommentCreateDTO, CommentUpdateDTO}
 import com.fengjian.blog.service.CommentsService
 import io.circe.Decoder
 import io.circe.syntax._

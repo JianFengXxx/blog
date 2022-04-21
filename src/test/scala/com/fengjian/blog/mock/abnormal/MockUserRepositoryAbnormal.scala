@@ -3,8 +3,8 @@ package com.fengjian.blog.mock.abnormal
 import cats.effect.IO
 import com.fengjian.blog.exception.{UserHasExistError, UserNotFoundError}
 import com.fengjian.blog.repository.UserRepository
-import com.fengjian.blog.repository.model.{UserBasicInfoPO, UserPO}
-import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, QuestionDTO}
+import com.fengjian.blog.repository.model.UserPO
+import com.fengjian.blog.router.model.request.user.QuestionDTO
 
 class MockUserRepositoryAbnormal extends UserRepository{
 
@@ -24,7 +24,9 @@ class MockUserRepositoryAbnormal extends UserRepository{
     IO.pure(Left(UserNotFoundError))
   }
 
-  override def getUserBasicInfo(username: String): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = ???
+  override def getUserInfo(username: String): IO[Either[UserNotFoundError.type, UserPO]] = ???
 
   override def getUserQuestions(userId: Int): IO[List[QuestionDTO]] = ???
+
+  override def refreshLastLogin(userId: Int): IO[Int] = ???
 }

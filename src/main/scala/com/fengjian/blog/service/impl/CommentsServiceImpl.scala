@@ -4,7 +4,7 @@ import cats.effect.IO
 import com.fengjian.blog.exception.CommentNotFoundError
 import com.fengjian.blog.repository.CommentsRepository
 import com.fengjian.blog.repository.model.{BlogPO, CommentPO}
-import com.fengjian.blog.router.model.comment.{CommentCreateDTO, CommentUpdateDTO}
+import com.fengjian.blog.router.model.request.comment.{CommentCreateDTO, CommentUpdateDTO}
 import com.fengjian.blog.service.CommentsService
 
 class CommentsServiceImpl(repository: CommentsRepository) extends CommentsService{

@@ -6,7 +6,7 @@ import com.fengjian.blog.mock.normal.MockBlogRepositoryNormal
 import com.fengjian.blog.repository.{BlogRepository, CommentsRepository}
 import com.fengjian.blog.repository.model.{BlogPO, CommentPO}
 import com.fengjian.blog.router.BlogRouter
-import com.fengjian.blog.router.model.blog.BlogCreateDTO
+import com.fengjian.blog.router.model.request.blog.BlogCreateDTO
 import com.fengjian.blog.service.impl.{BlogServiceImpl, CommentsServiceImpl}
 import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.implicits.{http4sKleisliResponseSyntaxOptionT, http4sLiteralsSyntax}
