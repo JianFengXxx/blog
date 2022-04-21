@@ -3,7 +3,8 @@ package com.fengjian.blog.repository.impl
 import cats.effect.{IO, Resource}
 import com.fengjian.blog.exception._
 import com.fengjian.blog.repository.{DatabaseTransactor, UserRepository}
-import com.fengjian.blog.repository.model.UserPO
+import com.fengjian.blog.repository.model.{QuestionPO, UserBasicInfoPO, UserPO}
+import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, QuestionDTO}
 import doobie.hikari.HikariTransactor
 import doobie.implicits._
 
@@ -60,6 +61,30 @@ class UserRepositoryImpl(transactor: Resource[IO, HikariTransactor[IO]]) extends
         .map{
           affectRows => if (affectRows == 1) Right(nickname) else Left(UserNotFoundError)
         }
+    )
+  }
+
+  override def getUserBasicInfo(username: String): IO[Either[UserNotFoundError.type, UserBasicInfoPO]] = {
+    transactor.use(
+      xa => {
+        sql"select id, username, password, nickname, name, birthday, gender from user_info where username=$username"
+          .query[UserBasicInfoPO]
+          .option
+          .transact(xa)
+          .map {
+            case Some(userBasicInfoPO) => Right(userBasicInfoPO)
+            case _ => Left(UserNotFoundError)
+          }
+      }
+    )
+  }
+
+  override def getUserQuestions(userId: Int): IO[List[QuestionDTO]] = {
+    transactor.use(
+      xa => sql"select question,answer from user_questions where user_id = $userId"
+        .query[QuestionDTO]
+        .to[List]
+        .transact(xa)
     )
   }
 

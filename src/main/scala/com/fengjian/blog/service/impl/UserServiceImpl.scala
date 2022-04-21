@@ -3,8 +3,8 @@ package com.fengjian.blog.service.impl
 import cats.effect.IO
 import com.fengjian.blog.exception.{UserHasExistError, UserNotFoundError}
 import com.fengjian.blog.repository.UserRepository
-import com.fengjian.blog.repository.model.UserPO
-import com.fengjian.blog.router.model.user.{UserCreateDTO, UserLoginDTO, UserUpdateDTO}
+import com.fengjian.blog.repository.model.{UserBasicInfoPO, UserPO}
+import com.fengjian.blog.router.model.user.{RetrievePasswordDTO, QuestionDTO, UserCreateDTO, UserLoginDTO, UserUpdateDTO}
 import com.fengjian.blog.service.UserService
 
 class UserServiceImpl(repository: UserRepository) extends UserService {
@@ -24,6 +24,23 @@ class UserServiceImpl(repository: UserRepository) extends UserService {
 
   override def login(userLogin: UserLoginDTO): IO[Either[UserNotFoundError.type, UserPO]] = {
     repository.login(userLogin.username, userLogin.password)
+  }
+
+  override def retrievePassword(retrievePasswordDTO: RetrievePasswordDTO): IO[Either[UserNotFoundError.type, String]] = {
+    for {
+      userBasicInfo <- repository.getUserBasicInfo(retrievePasswordDTO.username)
+      result <- userBasicInfo match {
+        case Right(userBasicPO) => checkQuestions(userBasicPO, retrievePasswordDTO.questions)
+        case Left(_) => IO(Left(UserNotFoundError))
+      }
+    } yield result
+  }
+
+  private def checkQuestions(userBasicPO: UserBasicInfoPO, questions: List[QuestionDTO]): IO[Either[UserNotFoundError.type, String]] = {
+    for {
+      questionsFromDB <- repository.getUserQuestions(userBasicPO.id)
+      password = if (questions == questionsFromDB) Right(userBasicPO.password) else Left(UserNotFoundError)
+    } yield password
   }
 
 }
